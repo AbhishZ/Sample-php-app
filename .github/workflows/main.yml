@@ -75,6 +75,7 @@ jobs:
           fetch-depth: 0
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v2
+        continue-on-error: true
 
 
 #       - uses: actions/cache@v2
