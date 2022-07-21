@@ -34,14 +34,27 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: chekout code
-        uses: actions/checkout@v3
-      - name: Check for secrets
-        uses: carhartl/talisman-secrets-scan-action@v1.2.1
-        id: checks
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # fetch all history so multiple commits can be scanned
+      - name: GitGuardian scan
+        uses: GitGuardian/ggshield-action@master
+        env:
+          GITHUB_PUSH_BEFORE_SHA: ${{ github.event.before }}
+          GITHUB_PUSH_BASE_SHA: ${{ github.event.base }}
+          GITHUB_PULL_BASE_SHA:  ${{ github.event.pull_request.base.sha }}
+          GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
+          
+#       - name: chekout code
+#         uses: actions/checkout@v3
+        
+#       - name: Check for secrets
+#         id: checks
 #         uses: maddygoround/secretduty@v1.3
-      - name: Get results of scan
-        run: echo "Scan Results - ${{ steps.checks.outputs.result }}"
+#       - name: Get results of scan
+#         run: echo "Scan Results - ${{ steps.checks.outputs.result }}"
         
 #       - uses: actions/checkout@v3
 #         with:
