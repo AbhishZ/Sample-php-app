@@ -154,7 +154,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 #           image: dvwa
-          image-ref: 'https://hub.docker.com/r/sagikazarmark/dvwa'
+          image-ref: 'docker.io/sagikazarmark/dvwa:latest'
           exit-code: '1'
 #           ignore-unfixed: true
 #           vuln-type: 'os,library'
