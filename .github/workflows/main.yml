@@ -105,7 +105,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: master
+          ref: main
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.7.0
         #uses: zaproxy/action-full-scan@v0.7.0
@@ -124,14 +124,14 @@ jobs:
       matrix:
         domain:
           - http://35.89.117.245:8081/
-          #- example.com
+          - example.com
     steps:
       - name: Monitor - ${{ matrix.domain }}
         uses: bluenovaio/action-tls-monitor@main
-#         with:
-#           domain: ${{ matrix.domain }}
-#           expiration_days: 30
-#           approved_protocols: TLSv1.2,TLSv1.3      
+        with:
+          domain: ${{ matrix.domain }}
+          expiration_days: 30
+          approved_protocols: TLSv1.2,TLSv1.3      
 
 ## Trivy scan
   Trivy_scan:
@@ -139,7 +139,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Pull docker image
-        run: docker pull sample
+        run: docker pull sagikazarmark/dvwa
 
       - uses: lazy-actions/gitrivy@v3
         with:
