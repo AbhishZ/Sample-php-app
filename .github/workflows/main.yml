@@ -61,6 +61,8 @@ jobs:
           path: ~/.symfony/cache
           key: db
       - uses: symfonycorp/security-checker-action@v3
+        with:
+          lock: Sample-php-app/composer.lock
         continue-on-error: true
   
   ## PHP SAST SCAN      
