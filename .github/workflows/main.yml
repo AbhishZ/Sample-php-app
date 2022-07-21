@@ -62,7 +62,7 @@ jobs:
       - uses: symfonycorp/security-checker-action@v3
         with:
           disable-exit-code: 1
-          lock: Sample-php-app/composer.lock
+#           lock: Sample-php-app/composer.lock
         id: security-check
       - name: Display the vulnerabilities as JSON
         run: echo ${{ steps.security-check.outputs.vulns }}
@@ -102,34 +102,43 @@ jobs:
     name: ZAP web app scan
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: main
       - name: ZAP Scan
-        uses: zaproxy/action-baseline@v0.7.0
-        #uses: zaproxy/action-full-scan@v0.7.0
+        uses: zaproxy/action-baseline@v0.4.0
+        #uses: zaproxy/action-full-scan@v0.4.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          docker_name: 'owasp/zap2docker-stable'
           target: 'http://35.89.117.245:8081/'
-          rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-a -j'
+          
+#       - name: Checkout
+#         uses: actions/checkout@v3
+#         with:
+#           ref: main
+#       - name: ZAP Scan
+#         uses: zaproxy/action-baseline@v0.7.0
+#         #uses: zaproxy/action-full-scan@v0.7.0
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           docker_name: 'owasp/zap2docker-stable'
+#           target: 'http://35.89.117.245:8081/'
+#           rules_file_name: '.zap/rules.tsv'
+#           cmd_options: '-a -j'
 
 ## SSL SCAN   
   monitor:
     name: SSL/TLS Monitor
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        domain:
-          - http://35.89.117.245:8081/
-          - example.com
+#     strategy:
+#       matrix:
+#         domain:
+#           - http://35.89.117.245:8081/
+# #           - example.com
     steps:
-      - name: Monitor - ${{ matrix.domain }}
+#       - name: Monitor - ${{ matrix.domain }}
+      - name: Monitor 
         uses: bluenovaio/action-tls-monitor@main
         with:
-          domain: ${{ matrix.domain }}
+#           domain: ${{ matrix.domain }}
+          domain: http://35.89.117.245:8081/
           expiration_days: 30
           approved_protocols: TLSv1.2,TLSv1.3      
 
@@ -141,10 +150,11 @@ jobs:
       - name: Pull docker image
         run: docker pull sagikazarmark/dvwa
 
-      - uses: lazy-actions/gitrivy@v3
+      - uses: aquasecurity/trivy-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           image: dvwa
+          image-ref: 'https://hub.docker.com/r/sagikazarmark/dvwa'
           format: 'json'
           output: 'trivy-results.json'
 
