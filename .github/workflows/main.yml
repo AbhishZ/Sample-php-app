@@ -62,6 +62,7 @@ jobs:
           ref: ${{ github.head_ref }}
       - name: trufflehog-actions-scan
         uses: edplato/trufflehog-actions-scan@master
+        continue-on-error: true
 
  ## Dependecy scan
   dependency-scan:
