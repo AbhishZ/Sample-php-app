@@ -148,13 +148,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Pull docker image
-        run: docker pull sagikazarmark/dvwa
+        run: docker pull mongo-express
 
       - uses: aquasecurity/trivy-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 #           image: dvwa
-          image-ref: 'docker.io/sagikazarmark/dvwa:latest'
+          image-ref: 'docker.io/mongo-express:latest'
           format: 'json'
           output: 'trivy-results.json'
 
