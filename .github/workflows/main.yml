@@ -150,25 +150,25 @@ jobs:
           output: 'trivy-results.json'
 
 ## Upload report to Dojo
-#   Upload_report: 
-#     name: Upload report to Dojo
-#     runs-on: ubuntu-latest
-#     steps:
-#     - name: Clone code repository
-#       uses: actions/checkout@v2
-#     - name: Publish report
-#       id: import-scan
-#       uses: ivanamat/defectdojo-import-scan@v1
-#       with:
-#         token: 9279e3094b334f8001dbfe74464890e5347639cf
-#         defectdojo_url: http://52.12.246.238:8080/
-#         file: trivy-results.json
-#         scan_type: Trivy Scan
-#         engagement: 2
-#     - name: Show response
-#       run: |
-#         set -e
-#         printf '%s\n' '${{ steps.import-scan.outputs.response }}' 
+  Upload_report: 
+    name: Upload report to Dojo
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone code repository
+      uses: actions/checkout@v2
+    - name: Publish report
+      id: import-scan
+      uses: ivanamat/defectdojo-import-scan@v1
+      with:
+        token: 9279e3094b334f8001dbfe74464890e5347639cf
+        defectdojo_url: http://52.12.246.238:8080/
+        file: trivy-results.json
+        scan_type: Trivy Scan
+        engagement: 2
+    - name: Show response
+      run: |
+        set -e
+        printf '%s\n' '${{ steps.import-scan.outputs.response }}' 
       
       # Runs a single command using the runners shell
       #- name: Run a one-line script
