@@ -122,7 +122,6 @@ jobs:
           target: 'http://35.89.117.245:8081/'
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-a -j -x zap.xml'
-        continue-on-error: true
 
 ## SSL SCAN   
   monitor:
@@ -154,7 +153,7 @@ jobs:
       - uses: aquasecurity/trivy-action@master
         continue-on-error: true
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+#           token: ${{ secrets.GITHUB_TOKEN }}
 #           image: dvwa
           image-ref: 'docker.io/sagikazarmark/dvwa:latest'
           exit-code: '1'
