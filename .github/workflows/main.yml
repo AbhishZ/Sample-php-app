@@ -144,8 +144,8 @@ jobs:
       - uses: lazy-actions/gitrivy@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          image: json
-          format: 'sarif'
+          image: dvwa
+          format: 'json'
           output: 'trivy-results.json'
 
 ## Upload report to Dojo
