@@ -61,8 +61,13 @@ jobs:
           key: db
       - uses: symfonycorp/security-checker-action@v3
         with:
+          disable-exit-code: 1
           lock: Sample-php-app/composer.lock
+        id: security-check
+      - name: Display the vulnerabilities as JSON
+        run: echo ${{ steps.security-check.outputs.vulns }}
         continue-on-error: true
+          
   
   ## PHP SAST SCAN      
   sast_scan:
@@ -94,21 +99,22 @@ jobs:
         
   ## ZAP DAST SCAN      
   ZAP_scan:
-    name: ZAP DAST scan
+    name: ZAP web app scan
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-#       security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: master
       - name: ZAP Scan
-        uses: zaproxy/action-baseline@v0.4.0
-        #uses: zaproxy/action-full-scan@v0.4.0
+        uses: zaproxy/action-baseline@v0.7.0
+        #uses: zaproxy/action-full-scan@v0.7.0
         with:
           #token: ${{ secrets.GITHUB_TOKEN }}
+          docker_name: 'owasp/zap2docker-stable'
           target: 'http://35.89.117.245:8081/'
-          continue-on-error: true
-          #rules_file_name: '.zap/rules.tsv'
-          #cmd_options: '-a -j'
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a -j'
 
 ## SSL SCAN   
   monitor:
@@ -126,7 +132,43 @@ jobs:
 #           domain: ${{ matrix.domain }}
 #           expiration_days: 30
 #           approved_protocols: TLSv1.2,TLSv1.3      
-        
+
+## Trivy scan
+  Trivy_scan:
+    name: Trivy Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull docker image
+        run: docker pull sample
+
+      - uses: lazy-actions/gitrivy@v3
+        with:
+          #token: ${{ secrets.GITHUB_TOKEN }}
+          image: json
+          format: 'sarif'
+          output: 'trivy-results.json'
+
+## Upload report to Dojo
+  Upload_report: 
+    name: Upload report to Dojo
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone code repository
+      uses: actions/checkout@v2
+    - name: Publish report
+      id: import-scan
+      uses: ivanamat/defectdojo-import-scan@v1
+      with:
+        token: 9279e3094b334f8001dbfe74464890e5347639cf
+        defectdojo_url: http://52.12.246.238:8080/
+        file: trivy-results.json
+        scan_type: Trivy Scan
+        engagement: 2
+    - name: Show response
+      run: |
+        set -e
+        printf '%s\n' '${{ steps.import-scan.outputs.response }}' 
+      
       # Runs a single command using the runners shell
       #- name: Run a one-line script
        # run: echo Hello, world!
