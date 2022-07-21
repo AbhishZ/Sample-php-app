@@ -105,23 +105,23 @@ jobs:
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.4.0
         #uses: zaproxy/action-full-scan@v0.4.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          target: 'http://35.89.117.245:8081/'
-          
-#       - name: Checkout
-#         uses: actions/checkout@v3
-#         with:
-#           ref: main
-#       - name: ZAP Scan
-#         uses: zaproxy/action-baseline@v0.7.0
-#         #uses: zaproxy/action-full-scan@v0.7.0
 #         with:
 #           token: ${{ secrets.GITHUB_TOKEN }}
-#           docker_name: 'owasp/zap2docker-stable'
 #           target: 'http://35.89.117.245:8081/'
-#           rules_file_name: '.zap/rules.tsv'
-#           cmd_options: '-a -j'
+          
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: main
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.7.0
+        #uses: zaproxy/action-full-scan@v0.7.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          docker_name: 'owasp/zap2docker-stable'
+          target: 'http://35.89.117.245:8081/'
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a -j -x zap.xml'
 
 ## SSL SCAN   
   monitor:
@@ -148,13 +148,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Pull docker image
-        run: docker pull mongo-express
+        run: docker pull sagikazarmark/dvwa
 
       - uses: aquasecurity/trivy-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 #           image: dvwa
-          image-ref: 'docker.io/library/mongo-express:latest'
+          image-ref: 'https://hub.docker.com/r/sagikazarmark/dvwa'
           exit-code: '1'
 #           ignore-unfixed: true
 #           vuln-type: 'os,library'
@@ -162,25 +162,25 @@ jobs:
           output: 'trivy-results.json'
 
 ## Upload report to Dojo
-  Upload_report: 
-    name: Upload report to Dojo
-    runs-on: ubuntu-latest
-    steps:
-    - name: Clone code repository
-      uses: actions/checkout@v2
-    - name: Publish report
-      id: import-scan
-      uses: ivanamat/defectdojo-import-scan@v1
-      with:
-        token: 9279e3094b334f8001dbfe74464890e5347639cf
-        defectdojo_url: http://52.12.246.238:8080/
-        file: trivy-results.json
-        scan_type: Trivy Scan
-        engagement: 2
-    - name: Show response
-      run: |
-        set -e
-        printf '%s\n' '${{ steps.import-scan.outputs.response }}' 
+#   Upload_report: 
+#     name: Upload report to Dojo
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Clone code repository
+#       uses: actions/checkout@v2
+#     - name: Publish report
+#       id: import-scan
+#       uses: ivanamat/defectdojo-import-scan@v1
+#       with:
+#         token: 9279e3094b334f8001dbfe74464890e5347639cf
+#         defectdojo_url: http://52.12.246.238:8080/
+#         file: trivy-results.json
+#         scan_type: Trivy Scan
+#         engagement: 2
+#     - name: Show response
+#       run: |
+#         set -e
+#         printf '%s\n' '${{ steps.import-scan.outputs.response }}' 
       
       # Runs a single command using the runners shell
       #- name: Run a one-line script
