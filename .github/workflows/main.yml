@@ -105,24 +105,25 @@ jobs:
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.4.0
         #uses: zaproxy/action-full-scan@v0.4.0
-#         with:
-#           token: ${{ secrets.GITHUB_TOKEN }}
-#           target: 'http://35.89.117.245:8081/'
-          
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: main
-      - name: ZAP Scan
-        uses: zaproxy/action-baseline@v0.7.0
-        #uses: zaproxy/action-full-scan@v0.7.0
-#         continue-on-error: true
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          docker_name: 'owasp/zap2docker-stable'
           target: 'http://35.89.117.245:8081/'
-          rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-a -j'
+          continue-on-error: true
+          
+#       - name: Checkout
+#         uses: actions/checkout@v3
+#         with:
+#           ref: main
+#       - name: ZAP Scan
+#         uses: zaproxy/action-baseline@v0.7.0
+#         #uses: zaproxy/action-full-scan@v0.7.0
+#         continue-on-error: true
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           docker_name: 'owasp/zap2docker-stable'
+#           target: 'http://35.89.117.245:8081/'
+#           rules_file_name: '.zap/rules.tsv'
+#           cmd_options: '-a -j'
 
 ## SSL SCAN   
   monitor:
