@@ -34,18 +34,18 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0 # fetch all history so multiple commits can be scanned
-      - name: GitGuardian scan
-        uses: GitGuardian/ggshield-action@master
-        env:
-          GITHUB_PUSH_BEFORE_SHA: ${{ github.event.before }}
-          GITHUB_PUSH_BASE_SHA: ${{ github.event.base }}
-          GITHUB_PULL_BASE_SHA:  ${{ github.event.pull_request.base.sha }}
-          GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-          GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
+#       - name: Checkout
+#         uses: actions/checkout@v2
+#         with:
+#           fetch-depth: 0 # fetch all history so multiple commits can be scanned
+#       - name: GitGuardian scan
+#         uses: GitGuardian/ggshield-action@master
+#         env:
+#           GITHUB_PUSH_BEFORE_SHA: ${{ github.event.before }}
+#           GITHUB_PUSH_BASE_SHA: ${{ github.event.base }}
+#           GITHUB_PULL_BASE_SHA:  ${{ github.event.pull_request.base.sha }}
+#           GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+#           GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
           
 #       - name: chekout code
 #         uses: actions/checkout@v3
@@ -56,12 +56,12 @@ jobs:
 #       - name: Get results of scan
 #         run: echo "Scan Results - ${{ steps.checks.outputs.result }}"
         
-#       - uses: actions/checkout@v3
-#         with:
-#           fetch-depth: 0
-#           ref: ${{ github.head_ref }}
-#       - name: trufflehog-actions-scan
-#         uses: edplato/trufflehog-actions-scan@master
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+      - name: trufflehog-actions-scan
+        uses: edplato/trufflehog-actions-scan@master
 
  ## Dependecy scan
   dependency-scan:
@@ -70,21 +70,25 @@ jobs:
     steps:
       - name: 'Checkout Repository'
         uses: actions/checkout@v3
-#       - name: 'Dependency Review'
-#         uses: actions/dependency-review-action@v2
-      - uses: actions/cache@v2
-        id: cache-db
         with:
-          path: ~/.symfony/cache
-          key: db
-      - uses: symfonycorp/security-checker-action@v3
-        with:
-          disable-exit-code: 1
-#           lock: Sample-php-app/composer.lock
-        id: security-check
-      - name: Display the vulnerabilities as JSON
-        run: echo ${{ steps.security-check.outputs.vulns }}
-        continue-on-error: true
+          fetch-depth: 0
+      - name: 'Dependency Review'
+        uses: actions/dependency-review-action@v2
+
+
+#       - uses: actions/cache@v2
+#         id: cache-db
+#         with:
+#           path: ~/.symfony/cache
+#           key: db
+#       - uses: symfonycorp/security-checker-action@v3
+#         with:
+#           disable-exit-code: 1
+# #           lock: Sample-php-app/composer.lock
+#         id: security-check
+#       - name: Display the vulnerabilities as JSON
+#         run: echo ${{ steps.security-check.outputs.vulns }}
+#         continue-on-error: true
           
   
   ## PHP SAST SCAN      
