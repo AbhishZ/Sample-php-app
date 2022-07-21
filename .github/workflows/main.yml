@@ -153,8 +153,8 @@ jobs:
       - uses: aquasecurity/trivy-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          image: dvwa
-#           image-ref: 'https://hub.docker.com/r/sagikazarmark/dvwa'
+#           image: dvwa
+          image-ref: 'docker.io/sagikazarmark/dvwa:latest'
           format: 'json'
           output: 'trivy-results.json'
 
