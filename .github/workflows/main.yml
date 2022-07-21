@@ -38,7 +38,7 @@ jobs:
       - name: chekout code
         uses: actions/checkout@v3
        
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
@@ -106,6 +106,7 @@ jobs:
         with:
           #token: ${{ secrets.GITHUB_TOKEN }}
           target: 'http://35.89.117.245:8081/'
+          continue-on-error: true
           #rules_file_name: '.zap/rules.tsv'
           #cmd_options: '-a -j'
 
@@ -121,10 +122,10 @@ jobs:
     steps:
       - name: Monitor - ${{ matrix.domain }}
         uses: bluenovaio/action-tls-monitor@main
-        with:
-          domain: ${{ matrix.domain }}
-          expiration_days: 30
-          approved_protocols: TLSv1.2,TLSv1.3      
+#         with:
+#           domain: ${{ matrix.domain }}
+#           expiration_days: 30
+#           approved_protocols: TLSv1.2,TLSv1.3      
         
       # Runs a single command using the runners shell
       #- name: Run a one-line script
