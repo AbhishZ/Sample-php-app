@@ -1,0 +1,125 @@
+# This is a basic workflow to help you get started with Actions
+
+name: DevSecOps
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "master" branch
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  
+permissions:
+  contents: read
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  Build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: chekout code
+        uses: actions/checkout@v3 
+        
+  ## Trufflehog secret scan        
+  trufflehog_scan:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: chekout code
+        uses: actions/checkout@v3
+       
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+      - name: trufflehog-actions-scan
+        uses: edplato/trufflehog-actions-scan@master
+
+ ## Dependecy scan
+  dependency-scan:
+    name: Dependency scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v3
+      - name: 'Dependency Review'
+        uses: actions/dependency-review-action@v2
+  
+  ## PHP SAST SCAN      
+  sast_scan:
+    name: PHP SAST scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # for checkout to fetch code
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@aa1fe473f9c687b6fb896056d771232c0bc41161
+        with:
+          coverage: none
+          tools: phpmd
+
+      - name: Run PHPMD
+        run: phpmd . sarif codesize --reportfile phpmd-results.sarif
+        continue-on-error: true
+
+      - name: Upload analysis results to GitHub
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: phpmd-results.sarif
+          wait-for-processing: true    
+        
+  ## ZAP DAST SCAN      
+  ZAP_scan:
+    name: ZAP DAST scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.4.0
+        #uses: zaproxy/action-full-scan@v0.4.0
+        with:
+          #token: ${{ secrets.GITHUB_TOKEN }}
+          target: 'http://35.89.117.245:8081/'
+          #rules_file_name: '.zap/rules.tsv'
+          #cmd_options: '-a -j'
+
+## SSL SCAN   
+  monitor:
+    name: SSL/TLS Monitor
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        domain:
+          - http://35.89.117.245:8081/
+          #- example.com
+    steps:
+      - name: Monitor - ${{ matrix.domain }}
+        uses: bluenovaio/action-tls-monitor@main
+        with:
+          domain: ${{ matrix.domain }}
+          expiration_days: 30
+          approved_protocols: TLSv1.2,TLSv1.3      
+        
+      # Runs a single command using the runners shell
+      #- name: Run a one-line script
+       # run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+      #- name: Run a multi-line script
+       # run: |
+        #  echo Add other actions to build,
+         # echo test, and deploy your project.
