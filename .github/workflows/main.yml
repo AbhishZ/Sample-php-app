@@ -154,7 +154,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           image: dvwa
-          image-ref: 'https://hub.docker.com/r/sagikazarmark/dvwa'
+#           image-ref: 'https://hub.docker.com/r/sagikazarmark/dvwa'
           format: 'json'
           output: 'trivy-results.json'
 
