@@ -74,9 +74,9 @@ jobs:
          with:
           interaction: no
           args: --profile --ignore-platform-reqs
-          continue-on-error: true
        - uses: actions/checkout@v3
        - uses: CycloneDX/gh-php-composer-generate-sbom@v1
+    continue-on-error: true   
        
         
         
