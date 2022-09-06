@@ -65,7 +65,17 @@ jobs:
         with:
           scanArguments: " "
         continue-on-error: true
-
+ ##SBOM 
+  SBOM-scan:
+    name: SBOM scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v3
+      - name: 'SBOM Review'
+        uses: CycloneDX/gh-php-composer-generate-sbom@v1
+        
+        
  ## Dependecy scan
   dependency-scan:
     name: Dependency scan
