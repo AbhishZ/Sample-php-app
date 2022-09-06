@@ -70,9 +70,14 @@ jobs:
     name: SBOM scan
     runs-on: ubuntu-latest
     steps:
-       - uses: php-actions/composer@v6
+       - uses: php-actions/composer@v7
+         with:
+          interaction: no
+          args: --profile --ignore-platform-reqs
+          continue-on-error: true
        - uses: actions/checkout@v3
        - uses: CycloneDX/gh-php-composer-generate-sbom@v1
+       
         
         
  ## Dependecy scan
