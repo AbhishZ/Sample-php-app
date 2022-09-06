@@ -70,7 +70,7 @@ jobs:
     name: SBOM scan
     runs-on: ubuntu-latest
     steps:
-       - uses: php-actions/composer@v7
+       - uses: php-actions/composer@v6
          with:
           interaction: no
           args: --profile --ignore-platform-reqs
